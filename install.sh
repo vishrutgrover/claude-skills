@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Symlink skills into ~/.claude/skills so edits here apply everywhere.
-# Looks in skills/ and vendor/*/skills/ (caveman, ponytail).
+# Looks in skills/ and vendor/*/skills/ (caveman, ponytail, motion-graphics).
 # Usage: ./install.sh              # all skills
 #        ./install.sh caveman tldr # just these
 #        ./install.sh --remove caveman

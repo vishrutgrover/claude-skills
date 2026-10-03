@@ -4,3 +4,6 @@
 [submodule "vendor/ponytail"]
 	path = vendor/ponytail
 	url = https://github.com/DietrichGebert/ponytail
+[submodule "vendor/motion-graphics"]
+	path = vendor/motion-graphics
+	url = https://github.com/Barty-Bart/motion-graphics

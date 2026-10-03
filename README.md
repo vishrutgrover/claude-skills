@@ -6,6 +6,7 @@ My plug-and-play skills for Claude Code.
 
 - [caveman](https://github.com/JuliusBrussee/caveman): why use many token when few do trick. `caveman`, `caveman-commit`, `caveman-review`, etc.
 - [ponytail](https://github.com/DietrichGebert/ponytail): laziest senior dev in the room. Reuse before writing. `ponytail`, `ponytail-review`, `ponytail-audit`, etc.
+- [motion-graphics](https://github.com/Barty-Bart/motion-graphics): motion graphics B-roll generator. `motion-broll`.
 
 ## Mine
 
