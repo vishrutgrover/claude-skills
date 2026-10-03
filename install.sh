@@ -1,27 +1,43 @@
 #!/usr/bin/env bash
 # Symlink skills into ~/.claude/skills so edits here apply everywhere.
-# Usage: ./install.sh            # all skills
-#        ./install.sh grunt tldr # just these
-#        ./install.sh --remove grunt
+# Looks in skills/ and vendor/*/skills/ (caveman, ponytail).
+# Usage: ./install.sh              # all skills
+#        ./install.sh caveman tldr # just these
+#        ./install.sh --remove caveman
+#        ./install.sh --list
 set -euo pipefail
 
-SRC="$(cd "$(dirname "$0")/skills" && pwd)"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
 DEST="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
-mkdir -p "$DEST"
+git -C "$ROOT" submodule update --init --quiet 2>/dev/null || true
 
-remove=false
-if [[ "${1:-}" == "--remove" ]]; then remove=true; shift; fi
+find_skill() {
+  for d in "$ROOT/skills/$1" "$ROOT"/vendor/*/skills/"$1"; do
+    [[ -f "$d/SKILL.md" ]] && { echo "$d"; return; }
+  done
+}
+all_skills() {
+  for d in "$ROOT"/skills/*/ "$ROOT"/vendor/*/skills/*/; do
+    [[ -f "$d/SKILL.md" ]] && basename "$d"
+  done
+}
+
+case "${1:-}" in
+  --list) all_skills; exit ;;
+  --remove) remove=true; shift ;;
+  *) remove=false ;;
+esac
 
 names=("$@")
-if [[ ${#names[@]} -eq 0 ]]; then
-  for d in "$SRC"/*/; do names+=("$(basename "$d")"); done
-fi
+[[ ${#names[@]} -eq 0 ]] && while read -r n; do names+=("$n"); done < <(all_skills)
 
+mkdir -p "$DEST"
 for n in "${names[@]}"; do
-  [[ -d "$SRC/$n" ]] || { echo "no such skill: $n" >&2; continue; }
   if $remove; then
     [[ -L "$DEST/$n" ]] && rm "$DEST/$n" && echo "removed $n"
-  else
-    ln -sfn "$SRC/$n" "$DEST/$n" && echo "installed $n"
+    continue
   fi
+  src="$(find_skill "$n")"
+  [[ -n "$src" ]] || { echo "no such skill: $n" >&2; continue; }
+  ln -sfn "$src" "$DEST/$n" && echo "installed $n"
 done
